@@ -18,6 +18,10 @@ En combinant ces approches, ce rapport vise à fournir une vue d’ensemble des 
 
 Voici le lien vers Rshiny : https://sgbxw8-justa-student.shinyapps.io/DATASCIENCE/
 
+Voici le lien du GitHub ou se trouve le code : https://github.com/Yunaie/DataScience
+
+
+
 # Graphiques et analyses
 
 ## 1. Analyse de la part de la consommation nationale couverte par la production régionale
