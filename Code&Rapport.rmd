@@ -1,0 +1,1006 @@
+---
+title: "Analyse de la contribution régionale à la consommation nationale\n Sirine Yakhou"
+
+output: pdf_document
+---
+
+# Introduction
+
+L’énergie est un pilier fondamental du développement économique et de la durabilité environnementale, particulièrement dans le contexte actuel où la transition énergétique est au cœur des préoccupations nationales et mondiales. En France, cette transition repose sur des objectifs ambitieux visant à réduire les émissions de gaz à effet de serre, à développer les énergies renouvelables et à atteindre une plus grande autonomie énergétique. Cependant, ces efforts nationaux se heurtent à des disparités régionales significatives. Certaines régions disposent de ressources naturelles abondantes et d’infrastructures énergétiques bien développées, tandis que d’autres, souvent plus peuplées, affichent une dépendance élevée vis-à-vis des énergies importées ou des sources non renouvelables. Cette situation soulève une question centrale : **comment les différences entre les régions en termes de production, de ressources naturelles et de consommation influencent-elles la transition énergétique en France, et comment peut-on les réduire pour garantir une énergie durable et équilibrée ?**
+
+Ce rapport propose d’explorer cette problématique en s’appuyant sur des données quantitatives, des analyses statistiques et des visualisations graphiques. Les données utilisées comprennent notamment l’évolution de la population dans les régions françaises, permettant de comprendre l’impact de la densité démographique sur les besoins énergétiques et les capacités de production, ainsi que la part régionale de la consommation d’électricité nationale couverte, classée par région, année et filière énergétique (incluant le nucléaire, l’éolien, les bioénergies, et l’hydraulique). Une base supplémentaire détaille la production régionale d’électricité, également classée par région, année et filière, ce qui met en évidence les spécialités et les contributions spécifiques de chaque territoire. Enfin, une base concernant la consommation énergétique des régions et des secteurs économiques offre une perspective essentielle sur les usages finaux de l’énergie.
+
+Cependant, le traitement de ces données a nécessité des ajustements significatifs pour les rendre exploitables et cohérentes entre elles. En effet, des disparités dans les noms des régions, ainsi que des différences de formats et de structure, ont rendu indispensable un nettoyage approfondi. Par exemple, les noms des régions ont été uniformisés pour éviter les doublons dus à des variations d’écriture (espaces, tirets, etc.). Ce travail de prétraitement, bien que chronophage, a été essentiel pour garantir l’intégrité et la compatibilité des données lors des analyses.
+
+L’analyse s’articule autour de plusieurs étapes complémentaires. Une exploration des données met en lumière les disparités régionales en termes de production et de consommation, tout en identifiant les filières énergétiques dominantes dans chaque région. Ensuite, un test statistique du khi-deux est appliqué pour établir des relations entre les régions et leurs filières énergétiques, révélant des spécialisations ou des dépendances marquées. Des visualisations graphiques détaillées permettent enfin de mieux comprendre les corrélations entre population, production et couverture des besoins énergétiques.
+
+En combinant ces approches, ce rapport vise à fournir une vue d’ensemble des défis énergétiques régionaux en France tout en soulignant les lacunes et limites des données disponibles. L’objectif final est d’identifier des leviers d’action pour une transition énergétique plus équilibrée et durable. En tenant compte des particularités régionales, il s’agit de favoriser une répartition équitable des ressources et de guider les politiques publiques vers une transition énergétique cohérente et adaptée à l’échelle nationale.
+
+Voici le lien vers Rshiny : https://sgbxw8-justa-student.shinyapps.io/DATASCIENCE/
+
+# Graphiques et analyses
+
+## 1. Analyse de la part de la consommation nationale couverte par la production régionale
+
+Cette analyse explore les données de la part de la consommation nationale d’électricité couverte par la production régionale en France métropolitaine, par région et par filière, pour les années 2018 à 2023. À l’aide des informations fournies dans le CSV, nous examinerons comment les différentes régions et filières contribuent à satisfaire les besoins énergétiques nationaux et les disparités éventuelles qui en découlent.
+
+### A. Aire empilée : Évolution des parts des filières dans le temps
+
+```{r aire-empilee, echo=FALSE, message=FALSE,warning=FALSE}
+library(ggplot2)
+
+# Charger les données
+data <- read.csv("par-conso-couverte.csv", sep = ";", header = TRUE)
+
+# Aire empilée
+ggplot(data, aes(x = Année, y = Part.de.la.consommation.nationale.couverte...., fill = Filière)) +
+  geom_area(alpha = 0.7) +
+  labs(
+    title = "Évolution des parts de consommation nationale couvertes par filière",
+    x = "Année",
+    y = "Part couverte (%)",
+    fill = "Filière"
+  ) +
+  theme_minimal()
+```
+
+Le graphique présente l'évolution des **parts de consommation nationale couvertes par différentes filières énergétiques** entre 2018 et 2023. Chaque couleur représente une filière, telles que le nucléaire, l’éolien, les bioénergies, le thermique fossile, le solaire et l’hydraulique. L’axe horizontal correspond aux années, tandis que l’axe vertical indique la proportion de la consommation nationale couverte par chaque filière, exprimée en pourcentage.
+
+On observe que le **nucléaire** (en bleu clair) reste la principale source de couverture énergétique en France sur la période étudiée. Cependant, ses parts fluctuent considérablement, atteignant des pics importants en 2019 et 2023. Les **bioénergies** (en rouge clair) et l’**éolien** (en vert) montrent une augmentation graduelle de leur contribution, reflétant les efforts en faveur des énergies renouvelables. Le **thermique fossile** (en rose) et le **solaire** (en jaune pâle) ont des contributions faibles et relativement stables, traduisant leur rôle encore limité dans le mix énergétique. Enfin, l'**hydraulique** (en vert clair) demeure une source constante, bien que sa contribution soit relativement faible.
+
+Une discontinuité frappante est visible pour l’année 2021. Toutes les contributions semblent presque nulles pour cette année. Cela ne reflète probablement pas une réalité énergétique mais plutôt une **lacune dans les données** utilisées pour construire ce graphique. Cette absence pourrait être due à des **valeurs manquantes dans le fichier de données**, à un **problème de collecte ou de traitement des informations pour cette période**, ou encore à une erreur dans l’extraction ou le filtrage des données lors de l’analyse.
+
+Malgré cette anomalie, le graphique illustre la transition énergétique en France. Le rôle dominant du nucléaire reste une constante, mais la montée progressive des énergies renouvelables, comme les bioénergies et l’éolien, témoigne des efforts pour diversifier le mix énergétique. Cette tendance souligne l’importance croissante des investissements dans les énergies renouvelables pour réduire la dépendance au nucléaire et aux énergies fossiles.
+
+### B. Barres empilées : Comparaison des régions pour une année donnée
+
+```{r barres-empilees-2020, echo=FALSE, message=FALSE,warning=FALSE}
+# Filtrer pour une année donnée (par exemple, 2022)
+data_2022 <- subset(data, Année == 2022)
+
+# Barres empilées
+ggplot(data_2022, aes(x = Région, y = Part.de.la.consommation.nationale.couverte...., fill = Filière)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(
+    title = "Part de consommation nationale couverte par région et filière (2022)",
+    x = "Région",
+    y = "Part couverte (%)",
+    fill = "Filière"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Ce graphique en barres empilées représente la part de la consommation nationale couverte par chaque région et filière énergétique pour l'année 2022. Chaque barre verticale correspond à une région, tandis que les différentes couleurs empilées indiquent les contributions des filières énergétiques telles que le nucléaire, l’éolien, l’hydraulique, les bioénergies, le solaire et le thermique fossile. L’axe horizontal présente les noms des régions françaises, et l’axe vertical exprime les pourcentages de la consommation nationale couverte par ces filières.
+
+L’analyse montre une nette domination du nucléaire dans des régions comme l’Auvergne-Rhône-Alpes, la Normandie, le Grand Est et l’Île-de-France. Cette prédominance s’explique par la présence de centrales nucléaires majeures dans ces régions, qui jouent un rôle central dans le mix énergétique français. À côté de cette source d’énergie dominante, certaines régions se distinguent par leur spécialisation dans les énergies renouvelables. Par exemple, l’éolien est particulièrement développé en Nouvelle-Aquitaine, en Occitanie et en Bretagne, des régions bénéficiant de conditions climatiques favorables à cette filière. L’hydraulique, quant à elle, occupe une place importante en Auvergne-Rhône-Alpes, profitant de ressources naturelles abondantes comme les fleuves et les barrages.
+
+Les bioénergies et le solaire, bien qu’encore modestes en termes de contribution globale, affichent une présence notable dans plusieurs régions, témoignant de leur développement progressif dans le paysage énergétique français. En revanche, le thermique fossile, bien qu’en déclin, reste visible dans des régions comme la Provence-Alpes-Côte d’Azur et les Hauts-de-France, ce qui indique que la transition énergétique n’est pas encore totalement achevée. Ce graphique met en lumière les disparités régionales dans le mix énergétique français. Alors que certaines régions comme l’Auvergne-Rhône-Alpes et la Normandie sont des contributeurs majeurs grâce à leurs infrastructures bien développées, d’autres comme la Bretagne ou la Corse ont des parts de couverture plus modestes. Cela souligne des opportunités pour renforcer les investissements dans les énergies renouvelables dans ces régions.
+
+## 2. Analyse des données de production régionale d'électricité
+
+Cette analyse explore les données de production d’électricité renouvelable en France, par région et par filière, à l’aide des informations fournies dans les deux CSV. Nous croiserons également ces données pour mieux comprendre les dynamiques entre production et consommation d’électricité en France.
+
+### A. Évolution de la production par filière au fil des années
+
+```{r aire-empilee-production, , message=FALSE,echo=FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+# Charger les données du CSV de production
+data_production <- read.csv("prod-region-annuelle-enr.csv", sep = ";", header = TRUE)
+
+# Transformer les données pour les mettre au format long
+data_long <- data_production %>%
+  pivot_longer(cols = starts_with("Production."),
+               names_to = "Filière",
+               values_to = "Production") %>%
+  filter(Filière != "Production.totale.renouvelable..GWh.")
+
+# Nettoyer les noms des filières pour plus de lisibilité
+data_long$Filière <- gsub("Production.", "", data_long$Filière)
+data_long$Filière <- gsub(".renouvelable..GWh.", "", data_long$Filière)
+
+# Créer une aire empilée pour visualiser les tendances
+ggplot(data_long, aes(x = Annee, y = Production, fill = Filière)) +
+  geom_area(alpha = 0.7) +
+  labs(
+    title = "Évolution de la production régionale par filière",
+    x = "Année",
+    y = "Production (GWh)",
+    fill = "Filière"
+  ) +
+  theme_minimal()
+```
+
+Ce graphique présente l’évolution de la production régionale d’électricité par filière en France sur la période étudiée. Les différentes filières énergétiques renouvelables, telles que l’hydraulique, l’éolien, le solaire, les bioénergies, le gaz renouvelable et la production électrique générale, sont représentées par des couleurs distinctes. L’axe horizontal indique les années, tandis que l’axe vertical montre la production en gigawattheures (GWh).
+
+On observe une forte dominance des filières hydraulique et électrique générale, qui contribuent de manière significative à la production totale. Ces deux filières affichent toutefois des variations importantes d’une année à l’autre, probablement dues à des facteurs tels que les conditions climatiques ou des fluctuations de la demande énergétique. Les baisses observées autour de 2011 et 2015 pourraient refléter des événements particuliers, comme des conditions météorologiques défavorables ou des ajustements dans les infrastructures de production.
+
+Par ailleurs, les filières éolienne et solaire montrent une croissance progressive au fil des années, traduisant les efforts déployés pour diversifier le mix énergétique à travers les énergies renouvelables. Bien que leur contribution reste modeste par rapport aux filières dominantes, leur progression témoigne de l’impact des politiques publiques visant à réduire la dépendance aux énergies fossiles et à favoriser la transition énergétique.
+
+Certaines années, comme 2010 et 2020, se démarquent par des pics de production significatifs, notamment dans les filières hydraulique et électrique générale. Ces augmentations pourraient être liées à des événements spécifiques, tels qu’une demande énergétique accrue ou des améliorations dans les infrastructures de production. Cependant, ces anomalies mériteraient une analyse approfondie pour en comprendre les causes exactes.
+
+Ce graphique met en lumière les disparités dans l’évolution des différentes filières énergétiques en France. Il reflète une transition énergétique en cours, marquée par une montée en puissance des énergies renouvelables, tout en confirmant la prédominance des filières historiques comme l’hydraulique. Ces observations soulignent l’importance des conditions climatiques, des politiques publiques et des choix stratégiques dans l’évolution du secteur énergétique français.
+
+------------------------------------------------------------------------
+
+### B. Répartition régionale de la production par filière
+
+```{r barres-empilees-production-region, echo=FALSE, message=FALSE}
+# Agréger les données par région et filière
+data_region <- data_long %>%
+  group_by(Nom.INSEE.région, Filière) %>%
+  summarise(Total_Production = sum(Production, na.rm = TRUE))
+
+# Créer des barres empilées
+ggplot(data_region, aes(x = Nom.INSEE.région, y = Total_Production, fill = Filière)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(
+    title = "Répartition de la production par région et filière",
+    x = "Région",
+    y = "Production (GWh)",
+    fill = "Filière"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Ce graphique représente la répartition de la production d’électricité par région et par filière en France. Les barres empilées permettent de visualiser la contribution de chaque filière énergétique renouvelable – hydraulique, éolien, solaire, bioénergies, gaz et électrique – au mix énergétique des différentes régions. L’axe horizontal liste les régions françaises, tandis que l’axe vertical exprime la production en gigawattheures (GWh).
+
+On remarque que certaines régions dominent largement la production énergétique nationale. Par exemple, l’Auvergne-Rhône-Alpes se distingue par une production hydraulique très importante, en raison de ses ressources naturelles abondantes comme les barrages et les cours d’eau. Cette dominance de l’hydraulique place cette région loin devant les autres en termes de production totale. D'autres régions, comme le Grand Est et l’Occitanie, montrent une production plus diversifiée, avec des contributions significatives de l’éolien et du solaire en complément de l’hydraulique.
+
+Certaines régions, telles que la Bretagne et la Provence-Alpes-Côte d’Azur, se caractérisent par une production énergétique relativement modeste, mais elles mettent davantage l’accent sur les énergies renouvelables émergentes comme le solaire et l’éolien. Cette répartition souligne les disparités géographiques dans les ressources naturelles disponibles et dans l'adoption de certaines filières énergétiques.
+
+Ce graphique révèle les particularités régionales du mix énergétique français. Il met en lumière l’importance des ressources naturelles locales dans la production d’électricité renouvelable et montre comment certaines régions se spécialisent dans des filières spécifiques. Cela reflète également des choix stratégiques régionaux, favorisés par des politiques publiques adaptées à leurs potentiels énergétiques respectifs. Ces observations soulignent la nécessité de continuer à investir dans les énergies renouvelables, tout en prenant en compte les spécificités de chaque région pour maximiser leur contribution au mix énergétique national.
+
+### C. Comparaison production vs consommation couverte
+
+```{r scatter-production-consommation, echo=FALSE, message=FALSE}
+# Charger les données du CSV de consommation
+data_conso <- read.csv("par-conso-couverte.csv", sep = ";", header = TRUE)
+
+# Croiser les données
+data_croisee <- merge(
+  x = data_production,
+  y = data_conso,
+  by.x = "Code.INSEE.région",
+  by.y = "Code.INSEE.région"
+)
+
+# Scatter plot : Production totale vs consommation couverte
+ggplot(data_croisee, aes(x = Production.totale.renouvelable..GWh., y = Part.de.la.consommation.nationale.couverte....)) +
+  geom_point(aes(color = Région), size = 3) +
+  labs(
+    x = "Production totale (GWh)",
+    y = "Part couverte (%)",
+    color = "Région"
+  ) +
+  theme_minimal()
+```
+
+Ce graphique présente une comparaison entre la production totale d'électricité renouvelable en gigawattheures (GWh) et la part de la consommation nationale couverte, exprimée en pourcentage, pour différentes régions françaises. Chaque point représente une région pour une année donnée, et les couleurs permettent de différencier les régions.
+
+L’objectif de ce graphique est d'examiner la relation entre la production régionale et sa contribution à la couverture de la consommation nationale. Il met en évidence les disparités régionales en termes de capacité de production et leur rôle dans l'équilibre énergétique national.
+
+En analysant ce graphique, plusieurs observations se dégagent. Certaines régions, comme l'Auvergne-Rhône-Alpes et la Nouvelle-Aquitaine, affichent des niveaux élevés de production, dépassant parfois 20 000 GWh, tout en couvrant une part significative de la consommation nationale, atteignant environ 15 %. Ces régions, dotées de ressources naturelles importantes et de capacités de production accrues, jouent un rôle clé dans le mix énergétique français.
+
+À l'opposé, certaines régions comme la Corse ou la Provence-Alpes-Côte d'Azur montrent une production plus modeste et une couverture relativement faible. Cela reflète des différences structurelles, notamment dans les ressources disponibles et les infrastructures énergétiques. Il est également intéressant de noter que des régions comme la Bretagne, malgré une production relativement faible, affichent une part de couverture notable, indiquant une consommation adaptée à leur capacité de production.
+
+Ce graphique met en lumière les disparités géographiques dans le système énergétique français. Il souligne que certaines régions sont des piliers de la production nationale, tandis que d'autres dépendent davantage des importations ou de la redistribution énergétique entre régions. Cela reflète également des politiques locales et des investissements spécifiques, qui influencent la dynamique de production et de consommation d'énergie renouvelable à l'échelle régionale.
+
+### D. Part de consommation couverte vs production totale
+
+```{r Part de consommation couverte vs production totale, echo=FALSE, fig.align='center'}
+
+
+
+library(ggrepel)
+library(stringr)
+library(readxl)
+library(dplyr)
+
+# CHARGE DONNEES
+popu_depart <- tryCatch(
+  read_excel("popu_departement.xls"),
+  error = function(e) stop("Erreur : Impossible de charger le fichier 'popu_departement.xls'.")
+)
+prod_energie <- tryCatch(
+  read.csv("prod-region-annuelle-enr.csv", stringsAsFactors = FALSE, sep = ";"),
+  error = function(e) stop("Erreur : Impossible de charger le fichier 'prod-region-annuelle-enr.csv'.")
+)
+consommation_couverte <- tryCatch(
+  read.csv("par-conso-couverte.csv", stringsAsFactors = FALSE, sep = ";"),
+  error = function(e) stop("Erreur : Impossible de charger le fichier 'par-conso-couverte.csv'.")
+)
+
+
+
+#VERIF
+if (ncol(popu_depart) == 5) {
+  colnames(popu_depart) <- c("Region", "Recensement_1990", "Recensement_1999",                  "Recensement_2008", "Recensement_2024")
+} else {
+  stop("Erreur : Le fichier 'popu_departement.xls' ne contient pas 5 colonnes.")
+}
+
+
+if (ncol(prod_energie) == 12) {
+  colnames(prod_energie) <- c("Annee", "Nom_INSEE_region", "Code_INSEE_region", 
+                              "Production_hydraulique", "Production_bioenergies", 
+                              "Production_eolienne", "Production_solaire", 
+                              "Production_renouvelable", "Production_gaz", 
+                              "Production_totale", "Geo_shape", "Geo_point")
+} else {
+  stop("Erreur : Le fichier 'prod-region-annuelle-enr.csv' ne contient pas 12 colonnes.")
+}
+
+                              
+                              
+
+if (ncol(consommation_couverte) == 7) {
+  colnames(consommation_couverte) <- c("Année", "Code.INSEE.region", "Région", 
+                                       "Filière","Part.de.la.consommation.nationale.couverte....", 
+                                       "Géo.shape.de.la.région", "Géo.point.de.la.région")
+} else {
+  stop("Erreur : Le fichier 'par-conso-couverte.csv' ne contient pas 7 colonnes.")
+}
+
+
+
+# Filtrer pour les régions continentales
+regions_continentales <- c("Auvergne-Rhône-Alpes", "Bourgogne- Franche-Comté", "Bretagne",
+                           "Centre - Val de Loire", "Grand Est", "Hauts-de-France",
+                           "Île-de-France", "Normandie", "Nouvelle Aquitaine",
+                           "Occitanie", "Pays de la Loire", "Provence-Alpes-Côte d'Azur")
+
+
+popu_depart <- popu_depart %>% filter(Region %in% regions_continentales)
+
+
+
+popu_2024 <- popu_depart %>%
+  select(Region, Recensement_2024) %>%
+  rename(Population = Recensement_2024) %>%
+  mutate(Population = as.numeric(Population)) # Conversion en numérique
+
+prod_2024 <- prod_energie %>%
+  filter(Annee == 2023) %>%
+  select(Nom_INSEE_region, Production_totale) %>%
+  rename(Region = Nom_INSEE_region) %>%
+  mutate(Production_totale = as.numeric(Production_totale)) %>%
+  filter(Region != "Corse") 
+
+consommation_2024 <- consommation_couverte %>%
+  filter(Année == 2023) %>%
+  group_by(Région) %>%
+  summarise(Total_conso = sum(Part.de.la.consommation.nationale.couverte...., na.rm = TRUE)) %>%
+  filter(Région != "Corse") %>%
+  rename(Region = Région)
+
+
+# Nettoyer les noms de régions en remplaçant les espaces par des tirets
+clean_regions <- function(region) {
+  region %>%
+    str_replace_all("\\s*-\\s*", "-") %>%  # Corrige les espaces autour des tirets
+    str_replace_all("\\s+", "-") %>%      # Remplace les espaces entre les mots par des tirets
+    str_trim()                            # Supprime les espaces au début/fin
+}
+
+
+
+
+
+
+data_corr <- merge(popu_2024, prod_2024, by = "Region")
+
+# Appliquer le nettoyage aux deux datasets
+popu_2024$Region <- clean_regions(popu_2024$Region)
+prod_2024$Region <- clean_regions(prod_2024$Region)
+data_corr$Region <- clean_regions(data_corr$Region)
+consommation_2024$Region <- clean_regions(consommation_2024$Region)
+
+
+correlation_data <- merge(data_corr, consommation_2024, by = "Region")
+
+
+
+# Créer le graphique combiné
+ggplot(correlation_data, aes(x = Production_totale, y = Total_conso, color = Population)) +
+  geom_point(size = 3) +  # Points
+  geom_text_repel(aes(label = Region), size = 3) +  # Étiquettes des régions
+  labs(
+    title = "Corrélation entre production totale et\npart de consommation nationale couverte (2024)",
+    x = "Production totale (GWh)",
+    y = "Part de consommation couverte (%)",
+    color = "Population"
+  ) +
+  scale_color_gradientn(
+    colors = c("blue", "purple", "red", "orange", "yellow"), # Dégradé multicolore
+    guide = guide_colorbar(barwidth = 20, barheight = 0.5)  # Ajuste la barre de légende
+  ) +
+  theme_minimal() +
+  theme(
+    plot.margin = unit(c(1, 1, 1, 1), "cm"), # Ajuster les marges
+    text = element_text(size = 10),          # Taille globale du texte
+    plot.title = element_text(size = 12, hjust = 0.5),    # Centrer et ajuster le titre
+    axis.title = element_text(size = 10),    # Taille des titres des axes
+    axis.text = element_text(size = 8),      # Taille des étiquettes des axes
+    legend.position = "bottom"               # Déplacer la légende en bas pour plus d'espace
+  )
+
+
+```
+
+Ce graphique illustre la corrélation entre la **production totale d'énergie** (en GWh) et la **part de consommation nationale couverte** (en pourcentage) par région pour l'année 2024. Chaque point correspond à une région française, dont le nom est affiché à proximité. La couleur des points est associée à la population de la région, selon une échelle allant du bleu (faible population) au jaune (forte population).
+
+La région **Auvergne-Rhône-Alpes** se démarque par une production énergétique extrêmement élevée, atteignant près de 30 000 GWh, tout en maintenant une part de consommation couverte relativement modeste, autour de 15 %. Cela reflète probablement une capacité de production importante, mais une part de cette énergie peut être exportée ou utilisée pour d'autres secteurs. La couleur orange indique une population intermédiaire pour cette région.
+
+En revanche, l'**Île-de-France**, bien qu’elle soit la région la plus peuplée (en jaune vif), affiche une production énergétique très faible, proche de 5 000 GWh, et une part de consommation couverte presque nulle. Cette caractéristique peut être expliquée par le profil économique de cette région, davantage tournée vers la consommation et les services que vers la production énergétique.
+
+Des régions comme la **Normandie** et le **Centre-Val de Loire** affichent des parts de consommation couvertes significativement plus élevées, dépassant 20 %, malgré une production énergétique modérée. Cela pourrait refléter une meilleure adéquation entre leur production locale et leur consommation énergétique.
+
+Les régions **Nouvelle-Aquitaine**, **Occitanie**, et **Provence-Alpes-Côte d'Azur**, quant à elles, se regroupent au milieu du graphique. Ces régions présentent des niveaux similaires de production (entre 5 000 et 15 000 GWh) et de part de consommation couverte (inférieure à 10 %). Cela peut indiquer une dépendance partielle à des sources d’énergie externes.
+
+Enfin, les régions comme la **Bretagne**, les **Pays de la Loire**, et la **Bourgogne-Franche-Comté** occupent le bas du graphique avec une faible production et une faible part de consommation couverte. Cela met en évidence une contribution énergétique modeste pour ces régions.
+
+En résumé, ce graphique met en évidence des disparités notables entre les régions françaises en matière de production énergétique et de consommation couverte. Les couleurs permettent de visualiser l'impact de la population : les régions à forte population comme l’Île-de-France ont une faible production, tandis que certaines régions à population modérée, comme Auvergne-Rhône-Alpes, surproduisent. Ce genre d’analyse pourrait être crucial pour élaborer des politiques énergétiques régionales équilibrées et optimiser la répartition des ressources.
+
+```{r setup , echo=FALSE, message=FALSE,warning=FALSE}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(readxl)
+library(scales)
+```
+
+## 3.Analyse de l'évolution démographique des régions françaises
+
+Cette analyse explore l’évolution démographique des régions françaises en utilisant les données fournies dans le CSV correspondant. Nous examinerons les variations de population au fil du temps afin de mieux comprendre leur impact potentiel sur les besoins énergétiques régionaux et les capacités de production.
+
+### A. Évolution de la population par région (1990 à 2024)
+
+```{r evolution-population-barres, echo=FALSE, message=FALSE, warning=FALSE}
+# Charger les données depuis le fichier Excel
+popu_depart <- read_excel("popu_departement.xls")
+
+# Renommer les colonnes pour une manipulation plus simple
+colnames(popu_depart) <- c("Region", "Recensement_1990", "Recensement_1999", 
+                           "Recensement_2008", "Recensement_2024")
+
+# Filtrer pour garder uniquement les régions de la France continentale
+regions_continentales <- c("Auvergne-Rhône-Alpes", "Bourgogne- Franche-Comté", "Bretagne",
+                           "Centre - Val de Loire", "Grand Est", "Hauts-de-France",
+                           "Île-de-France", "Normandie", "Nouvelle Aquitaine",
+                           "Occitanie", "Pays de la Loire", "Provence-Alpes-Côte d'Azur")
+
+popu_depart <- popu_depart %>%
+  filter(Region %in% regions_continentales)
+
+# Convertir les données au format long et assurer que la colonne Population est numérique
+popu_long <- popu_depart %>% 
+  pivot_longer(cols = starts_with("Recensement"), 
+               names_to = "Annee", 
+               values_to = "Population") %>%
+  mutate(
+    Annee = as.numeric(gsub("Recensement_", "", Annee)),
+    Population = as.numeric(gsub(",", "", Population))  # Supprimer les virgules et convertir en numérique
+  )
+
+# Tracer un diagramme en barres avec des étiquettes espacées sur l'axe Y
+ggplot(popu_long, aes(x = Region, y = Population, fill = as.factor(Annee))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_y_continuous(breaks = seq(0, 12000000, by = 2000000), labels = scales::comma) +
+  labs(
+    x = "Région",
+    y = "Population",
+    fill = "Année"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "top"
+  )
+```
+
+Ce graphique présente l'évolution de la population par région en France continentale sur quatre années clés : 1990, 1999, 2008 et 2024. Chaque barre correspond à une région, avec les couleurs représentant les différentes années. On observe une augmentation générale de la population dans toutes les régions au fil du temps, avec des régions comme l'Île-de-France affichant une population nettement plus élevée que les autres, reflétant son statut de région densément peuplée et économique majeure. Certaines régions, comme la Bretagne et la Bourgogne-Franche-Comté, montrent une croissance plus modérée, ce qui peut indiquer des dynamiques démographiques différentes liées à des facteurs économiques et sociaux spécifiques. Ce graphique permet de visualiser les tendances régionales et de comparer les disparités démographiques au fil des décennies.
+
+```{r chargement-donnees, echo=FALSE,echo=FALSE, message=FALSE, warning=FALSE}
+
+# Chargement des données
+
+library(readxl)
+library(dplyr)
+
+# Charger les fichiers Excel/CSV
+popu_depart <- tryCatch(
+  read_excel("popu_departement.xls"),
+  error = function(e) stop("Erreur : Impossible de charger le fichier 'popu_departement.xls'.")
+)
+prod_energie <- tryCatch(
+  read.csv("prod-region-annuelle-enr.csv", stringsAsFactors = FALSE, sep = ";"),
+  error = function(e) stop("Erreur : Impossible de charger le fichier 'prod-region-annuelle-enr.csv'.")
+)
+consommation_couverte <- tryCatch(
+  read.csv("par-conso-couverte.csv", stringsAsFactors = FALSE, sep = ";"),
+  error = function(e) stop("Erreur : Impossible de charger le fichier 'par-conso-couverte.csv'.")
+)
+
+
+# Vérification des colonnes et renommage
+if (ncol(popu_depart) == 5) {
+  colnames(popu_depart) <- c("Region", "Recensement_1990", "Recensement_1999",                  "Recensement_2008", "Recensement_2024")
+} else {
+  stop("Erreur : Le fichier 'popu_departement.xls' ne contient pas 5 colonnes.")
+}
+
+
+if (ncol(prod_energie) == 12) {
+  colnames(prod_energie) <- c("Annee", "Nom_INSEE_region", "Code_INSEE_region", 
+                              "Production_hydraulique", "Production_bioenergies", 
+                              "Production_eolienne", "Production_solaire", 
+                              "Production_renouvelable", "Production_gaz", 
+                              "Production_totale", "Geo_shape", "Geo_point")
+} else {
+  stop("Erreur : Le fichier 'prod-region-annuelle-enr.csv' ne contient pas 12 colonnes.")
+}
+
+                              
+                              
+
+if (ncol(consommation_couverte) == 7) {
+  colnames(consommation_couverte) <- c("Année", "Code.INSEE.region", "Région", 
+                                       "Filière","Part.de.la.consommation.nationale.couverte....", 
+                                       "Géo.shape.de.la.région", "Géo.point.de.la.région")
+} else {
+  stop("Erreur : Le fichier 'par-conso-couverte.csv' ne contient pas 7 colonnes.")
+}
+
+
+
+# Filtrer pour les régions continentales
+regions_continentales <- c("Auvergne-Rhône-Alpes", "Bourgogne- Franche-Comté", "Bretagne",
+                           "Centre - Val de Loire", "Grand Est", "Hauts-de-France",
+                           "Île-de-France", "Normandie", "Nouvelle Aquitaine",
+                           "Occitanie", "Pays de la Loire", "Provence-Alpes-Côte d'Azur")
+
+
+popu_depart <- popu_depart %>% filter(Region %in% regions_continentales)
+
+
+
+popu_2024 <- popu_depart %>%
+  select(Region, Recensement_2024) %>%
+  rename(Population = Recensement_2024) %>%
+  mutate(Population = as.numeric(Population)) # Conversion en numérique
+
+prod_2024 <- prod_energie %>%
+  filter(Annee == 2023) %>%
+  select(Nom_INSEE_region, Production_totale) %>%
+  rename(Region = Nom_INSEE_region) %>%
+  mutate(Production_totale = as.numeric(Production_totale)) %>%
+  filter(Region != "Corse") 
+
+
+```
+
+### B. Corrélation entre population et production totale
+
+```{r correlation-population-production, echo=FALSE, message=FALSE, warning=FALSE}
+# Code du graphique
+
+# Charger la bibliothèque ggrepel pour des labels clairs
+library(ggrepel)
+library(stringr)
+
+# Nettoyer les noms de régions en remplaçant les espaces par des tirets
+clean_regions <- function(region) {
+  region %>%
+    str_replace_all("\\s*-\\s*", "-") %>%  # Corrige les espaces autour des tirets
+    str_replace_all("\\s+", "-") %>%      # Remplace les espaces entre les mots par des tirets
+    str_trim()                            # Supprime les espaces au début/fin
+}
+
+# Appliquer le nettoyage aux deux datasets
+popu_2024$Region <- clean_regions(popu_2024$Region)
+prod_2024$Region <- clean_regions(prod_2024$Region)
+
+
+data_corr <- merge(popu_2024, prod_2024, by = "Region")
+
+# Calcul du coefficient de corrélation
+correlation <- cor(data_corr$Population, data_corr$Production_totale, method = "pearson")
+
+
+ggplot(data_corr, aes(x = Population, y = Production_totale)) +
+  # Points de données
+  geom_point(color = "blue", size = 3, alpha = 0.8) +
+  # Ligne de régression
+  geom_smooth(method = "lm", color = "red", se = FALSE, linetype = "dashed") +
+  geom_text_repel(aes(label = Region), 
+                  size = 3, 
+                  box.padding = 0.3, 
+                  max.overlaps = Inf, 
+                  segment.color = NA) +
+  # Mise en page et titres
+  labs(
+    subtitle = paste("Coefficient de corrélation =", round(cor(data_corr$Population, data_corr$Production_totale), 2)),
+    x = "Population",
+    y = "Production totale (GWh)",
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    plot.subtitle = element_text(size = 12, color = "gray"),
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 10),
+    plot.caption = element_text(size = 8, color = "gray"),
+    panel.grid.minor = element_blank()
+  ) +
+  scale_x_continuous(labels = scales::comma) +
+  scale_y_continuous(labels = scales::comma)
+
+```
+
+Ce graphique représente la corrélation entre la production totale d'énergie (en GWh) et la population des régions françaises. Les noms des régions sont affichés près des points qui correspondent à leurs valeurs de population et de production énergétique. Une ligne rouge en pointillé représente une régression linéaire, indiquant une tendance générale dans les données.
+
+On observe que la région Auvergne-Rhône-Alpes se distingue par une production énergétique très élevée, dépassant 30 000 GWh, ce qui en fait la région la plus productive du graphique. En revanche, l’Île-de-France, bien qu’elle soit la région la plus peuplée avec plus de 12,5 millions d’habitants, présente une production énergétique relativement faible, proche de 10 000 GWh. Cela peut refléter un profil économique ou énergétique spécifique à cette région, davantage orienté vers la consommation que vers la production.
+
+Les régions Normandie, Bretagne et Centre-Val de Loire se trouvent dans le bas du graphique, indiquant une production énergétique plus modeste et une population relativement faible. En revanche, des régions comme le Grand Est ou Hauts-de-France combinent une production et une population modérées.
+
+La tendance globale, représentée par la ligne rouge, montre une légère corrélation positive entre la population et la production totale. Cela suggère que les régions plus peuplées tendent à produire davantage d'énergie, bien que cette relation ne soit pas très forte. On peut remarquer que certaines régions, comme la Provence-Alpes-Côte d'Azur ou la Nouvelle-Aquitaine, sont proches de cette ligne de tendance, ce qui indique qu'elles suivent le comportement moyen attendu. En revanche, d'autres, comme Auvergne-Rhône-Alpes et Île-de-France, s’écartent significativement de cette tendance.
+
+Le graphique met également en évidence une disparité régionale notable, avec certaines régions étant soit très productives, soit très peuplées, mais rarement les deux simultanément. Cela pourrait soulever des questions sur les politiques énergétiques et les infrastructures de production dans différentes régions françaises.
+
+## 4 . Analyse de la consommation annuelle d’électricité et gaz par région
+
+Cette analyse examine la consommation annuelle d’électricité et de gaz en France, en mettant en lumière les différences régionales, sectorielles et par filière énergétique, pour mieux comprendre les dynamiques de demande énergétique.
+
+```{r setupGraph, echo=FALSE, warning=FALSE, message=FALSE}
+# Charger les bibliothèques nécessaires
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(readr)
+
+# Charger les données
+library(ggrepel)
+library(stringr)
+library(readxl)
+library(dplyr)
+
+
+consommation_data <- tryCatch(
+  read.csv("conso-elec.csv", sep = ";", stringsAsFactors = FALSE),
+  error = function(e) stop("Erreur : Impossible de charger le fichier 'conso-elec.csv'.")
+)
+
+clean_regions <- function(region) {
+  region %>%
+    str_replace_all("\\s*-\\s*", "-") %>%  # Corrige les espaces autour des tirets
+    str_replace_all("\\s+", "-") %>%      # Remplace les espaces entre les mots par des tirets
+    str_trim()                            # Supprime les espaces au début/fin
+}
+
+regions_continentales <- c(
+  "Grand Est", "Nouvelle-Aquitaine", "Occitanie", "Hauts-de-France", 
+  "Bourgogne-Franche-Comté", "Auvergne-Rhône-Alpes", "Île-de-France", 
+  "Centre-Val de Loire", "Normandie", "Pays de la Loire", 
+  "Bretagne", "Provence-Alpes-Côte d'Azur")
+
+# Renommer les colonnes pour simplifier l'usage
+
+
+consommation_data <- consommation_data %>% filter(Libellé.Région %in% regions_continentales)
+
+# Appliquer le nettoyage aux deux datasets
+consommation_data$Libellé.Région <- clean_regions(consommation_data$Libellé.Région)
+
+
+
+colnames(consommation_data) <- c(
+  "Operateur", "Annee", "Filiere", "CodeCategorie", "LibelleCategorie",
+  "CodeGrandSecteur", "LibelleGrandSecteur", "CodeNAF", "LibelleSecteurNAF",
+  "ConsommationMWh", "NombrePoints", "IndiceQualite", "NombreMaillesSecretisees",
+  "CodeRegion", "LibelleRegion"
+)
+
+
+
+
+```
+
+### A. Répartition de la consommation par région
+
+```{r region-consumption, echo=FALSE, fig.align='center'}
+# Aggréger les données par région
+region_consumption <- consommation_data %>%
+  group_by(LibelleRegion) %>%
+  summarise(ConsommationTotale = sum(ConsommationMWh, na.rm = TRUE))
+
+# Graphique
+ggplot(region_consumption, aes(x = reorder(LibelleRegion, ConsommationTotale), y = ConsommationTotale)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  coord_flip() +
+  labs(
+    title = "Répartition de la consommation totale par région",
+    x = "Régions",
+    y = "Consommation totale (MWh)"
+  ) +
+  theme_minimal()
+```
+
+Ce graphique illustre la répartition de la consommation totale d’électricité en MWh par région française. On observe que l'Île-de-France est la région avec la plus forte consommation, suivie par les Hauts-de-France et l’Auvergne-Rhône-Alpes. Ces trois régions se distinguent par leur poids démographique et leur concentration d’activités économiques, qui expliquent en partie leurs niveaux élevés de consommation énergétique.
+
+À l'inverse, des régions comme la Bretagne et le Centre-Val de Loire affichent des niveaux de consommation nettement plus faibles, ce qui peut être lié à une densité de population plus basse et à un profil économique moins énergivore. La Provence-Alpes-Côte d'Azur, la Normandie, et la Nouvelle-Aquitaine se situent dans une position intermédiaire, reflétant probablement un mélange de consommation résidentielle et industrielle.
+
+Cette répartition met en évidence les disparités régionales en termes de demande énergétique, qui peuvent être influencées par des facteurs tels que la taille de la population, le type d’activités économiques, et les conditions climatiques. Ces résultats soulignent l'importance d'adapter les stratégies de transition énergétique aux besoins spécifiques de chaque région pour garantir une gestion équilibrée et durable des ressources énergétiques.
+
+### B. Consommation par secteur économique
+
+```{r sector-consumption, echo=FALSE, fig.align='center'}
+# Aggréger les données par secteur économique
+sector_consumption <- consommation_data %>%
+  group_by(LibelleGrandSecteur) %>%
+  summarise(ConsommationTotale = sum(ConsommationMWh, na.rm = TRUE))
+
+# Graphique
+ggplot(sector_consumption, aes(x = reorder(LibelleGrandSecteur, ConsommationTotale), y = ConsommationTotale)) +
+  geom_bar(stat = "identity", fill = "darkgreen") +
+  coord_flip() +
+  labs(
+    title = "Consommation totale par secteur économique",
+    x = "Secteurs économiques",
+    y = "Consommation totale (MWh)"
+  ) +
+  theme_minimal()
+```
+
+Ce graphique présente la répartition de la consommation totale d’électricité en France selon les principaux secteurs économiques. Les secteurs résidentiel et industriel se démarquent nettement comme les plus grands consommateurs d’énergie. Le secteur résidentiel, probablement influencé par le chauffage, l'éclairage et l’utilisation croissante d’appareils électriques, affiche une consommation élevée comparable à celle du secteur industriel, qui regroupe les activités manufacturières et les infrastructures nécessitant une énergie considérable pour fonctionner.
+
+Le secteur tertiaire, qui inclut les services comme les commerces, les bureaux et les institutions publiques, se situe à un niveau intermédiaire de consommation. Cela reflète l’importance des activités économiques dans ce secteur, bien que celles-ci soient généralement moins énergivores par unité d’activité que dans l’industrie.
+
+En revanche, le secteur agricole représente une part marginale de la consommation totale, probablement en raison de sa dépendance plus faible à l’électricité par rapport à d'autres formes d'énergie, comme le carburant pour les machines agricoles. La présence d’une catégorie "Secteur Inconnu" indique des données qui n’ont pas pu être classifiées, ce qui souligne une potentielle limitation dans l’exhaustivité ou la précision des données.
+
+Cette analyse met en évidence les secteurs prioritaires pour des efforts d'optimisation énergétique, en particulier le résidentiel et l’industrie, qui jouent un rôle clé dans la transition énergétique en raison de leur impact significatif sur la demande nationale.
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(dplyr)
+library(stringr)
+library(ggrepel)
+library(readxl)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load-data, echo=FALSE, message=FALSE}
+
+popu_depart <- tryCatch(
+  read_excel("popu_departement.xls"),
+  error = function(e) stop("Erreur : Impossible de charger le fichier 'popu_departement.xls'.")
+)
+prod_energie <- tryCatch(
+  read.csv("prod-region-annuelle-enr.csv", stringsAsFactors = FALSE, sep = ";"),
+  error = function(e) stop("Erreur : Impossible de charger le fichier 'prod-region-annuelle-enr.csv'.")
+)
+consommation_couverte <- tryCatch(
+  read.csv("par-conso-couverte.csv", stringsAsFactors = FALSE, sep = ";"),
+  error = function(e) stop("Erreur : Impossible de charger le fichier 'par-conso-couverte.csv'.")
+)
+consommation_data <- tryCatch(
+  read.csv("conso-elec.csv", sep = ";", stringsAsFactors = FALSE),
+  error = function(e) stop("Erreur : Impossible de charger le fichier 'conso-elec.csv'.")
+)
+
+
+# Renommer les colonnes pour uniformiser
+colnames(popu_depart) <- c("Region", "Recensement_1990", "Recensement_1999", "Recensement_2008", "Recensement_2024")
+colnames(prod_energie) <- c("Annee", "Region", "Code_INSEE_region", 
+                            "Production_hydraulique", "Production_bioenergies", 
+                            "Production_eolienne", "Production_solaire", 
+                            "Production_renouvelable", "Production_gaz", 
+                            "Production_totale", "Geo_shape", "Geo_point")
+colnames(consommation_couverte) <- c("Année", "Code.INSEE.region", "Region", 
+                                     "Filière", "Part.de.la.consommation.nationale.couverte....", 
+                                     "Géo.shape.de.la.région", "Géo.point.de.la.région")
+colnames(consommation_data) <- c(
+  "Operateur", "Annee", "Filiere", "CodeCategorie", "LibelleCategorie",
+  "CodeGrandSecteur", "LibelleGrandSecteur", "CodeNAF", "LibelleSecteurNAF",
+  "ConsommationMWh", "NombrePoints", "IndiceQualite", "NombreMaillesSecretisees",
+  "CodeRegion", "Region"
+)
+
+# Nettoyer les noms des régions
+clean_regions <- function(region) {
+  region %>%
+    str_replace_all("\\s*-\\s*", "-") %>%
+    str_replace_all("\\s+", "-") %>%
+    str_trim()
+}
+
+
+# Filtrer pour les régions continentales
+
+regions_standard  <- c(
+  "Auvergne-Rhône-Alpes", "Bourgogne-Franche-Comté", "Bretagne",
+  "Centre-Val-de-Loire", "Corse", "Grand-Est", "Hauts-de-France",
+  "Île-de-France", "Normandie", "Nouvelle-Aquitaine", "Occitanie",
+  "Pays-de-la-Loire", "Provence-Alpes-Côte-d'Azur"
+)
+
+correspondance_regions <- c(
+  "Grand Est" = "Grand-Est",
+  "Nouvelle Aquitaine" = "Nouvelle-Aquitaine",
+  "Centre - Val de Loire" = "Centre-Val-de-Loire",
+  "Pays de la Loire" = "Pays-de-la-Loire",
+  "Provence-Alpes-Côte d'Azur" = "Provence-Alpes-Côte-d'Azur",
+  "(p)-:-résultats-provisoires-arrêtés-fin-2023" = NA,
+  "Pour-les-départements-d'Outre-mer,-voir-Population-totale-dans-Evolution-de-la-population" = NA,
+  "Source-:-Insee,-Recensements-de-population,-Estimations-de-population" = NA,
+  "France-métropolitaine" = NA,
+  "Région" = NA,
+  "Non-affecté-à-une-région" = NA,
+  "Guadeloupe" = NA,
+  "Martinique" = NA,
+  "Guyane" = NA,
+  "Mayotte" = NA,
+  "Corse" = NA,
+  "La-Réunion" = NA,
+   "<NA>" = NA
+)
+
+clean_and_standardize_regions <- function(region_column) {
+  region_column <- region_column %>%
+    str_trim() %>%                      # Supprime les espaces en début/fin
+    str_replace_all("\\s*-\\s*", "-") %>% # Remplace les espaces autour des tirets
+    str_replace_all("\\s+", "-")         # Remplace les espaces par des tirets
+  region_column <- recode(region_column, !!!correspondance_regions)
+  region_column <- ifelse(region_column %in% regions_standard, region_column, NA) # Filtrer pour garder uniquement les noms standardisés
+  return(region_column)
+}
+
+
+popu_depart$Region <- clean_and_standardize_regions(popu_depart$Region)
+prod_energie$Region <- clean_and_standardize_regions(prod_energie$Region)
+consommation_couverte$Region <- clean_and_standardize_regions(consommation_couverte$Region)
+consommation_data$Region <- clean_and_standardize_regions(consommation_data$Region)
+
+popu_depart <- popu_depart %>% filter(!is.na(Region))
+prod_energie <- prod_energie %>% filter(!is.na(Region))
+consommation_couverte <- consommation_couverte %>% filter(!is.na(Region))
+consommation_data <- consommation_data %>% filter(!is.na(Region))
+
+```
+
+### C. Analyse de la consommation par habitant
+
+```{r consommation-par-habitant, echo=FALSE, fig.align='center'}
+# Calculer la consommation par habitant
+data_combined <- merge(
+  popu_depart %>% select(Region, Recensement_2024) %>% rename(Population = Recensement_2024), 
+  consommation_data %>% 
+    group_by(Region) %>% 
+    summarise(ConsommationTotale = sum(ConsommationMWh, na.rm = TRUE)), 
+  by = "Region"
+)
+
+# Convertir les colonnes en numérique et gérer les valeurs manquantes
+data_combined <- data_combined %>%
+  mutate(
+    Population = as.numeric(Population),
+    ConsommationTotale = as.numeric(ConsommationTotale)
+  ) %>%
+  filter(!is.na(Population) & !is.na(ConsommationTotale)) %>%
+  mutate(ConsommationParHabitant = ConsommationTotale / Population)
+
+# Graphique
+ggplot(data_combined, aes(x = reorder(Region, ConsommationParHabitant), y = ConsommationParHabitant)) +
+  geom_bar(stat = "identity", fill = "darkblue") +
+  coord_flip() +
+  labs(
+    title = "Consommation par habitant par région",
+    x = "Régions",
+    y = "Consommation par habitant (MWh/habitant)"
+  ) +
+  theme_minimal()
+
+```
+
+Le diagramme en barres met en lumière la consommation d'énergie par habitant pour chaque région. Il permet de comparer les régions en fonction de cette variable, qui est calculée en divisant la consommation totale d'énergie par la population correspondante. Ce graphique montre des disparités régionales significatives : certaines régions, comme la Normandie ou le Grand-Est, présentent une consommation par habitant particulièrement élevée, tandis que d'autres, comme l’Occitanie ou la Nouvelle-Aquitaine, se situent en bas de l'échelle. Ces différences peuvent être attribuées à divers facteurs, tels que la structure économique de la région, le niveau d'industrialisation, ou encore les caractéristiques démographiques et climatiques. Ce diagramme illustre visuellement ces écarts et incite à explorer les raisons de ces inégalités énergétiques régionales.
+
+### D. Évolution temporelle de la consommation
+
+```{r time-consumption, echo=FALSE, fig.align='center',warning=FALSE}
+# Aggréger les données par année
+time_consumption <- consommation_data %>%
+  group_by(Annee) %>%
+  summarise(ConsommationTotale = sum(ConsommationMWh, na.rm = TRUE))
+
+# Graphique
+ggplot(time_consumption, aes(x = Annee, y = ConsommationTotale)) +
+  geom_line(color = "blue", size = 1) +
+  geom_point(color = "red", size = 2) +
+  labs(
+    title = "Évolution temporelle de la consommation",
+    x = "Années",
+    y = "Consommation totale (MWh)"
+  ) +
+  theme_minimal()
+```
+
+Ce graphique illustre l'évolution temporelle de la consommation totale d’électricité en France sur plusieurs années. Bien qu’il ait été conçu pour identifier les tendances et les variations de consommation au fil du temps, il présente des variations abruptes et incohérentes entre certaines années. Ces fluctuations, ainsi que les baisses et hausses soudaines, suggèrent qu’il existe des lacunes ou des anomalies dans les données disponibles. Ces irrégularités rendent difficile une interprétation fiable et précise des évolutions annuelles.
+
+Cependant, j’ai choisi d’inclure ce graphique dans le rapport pour montrer le travail effectué sur les données, tout en soulignant ses limites. Bien qu’il ne puisse pas être exploité pour tirer des conclusions pertinentes, il reflète les efforts réalisés dans l’exploration et la visualisation des données. Cela met également en évidence l’importance d’avoir des données complètes et cohérentes pour effectuer des analyses robustes et utiles.
+
+### E. Comparaison des filières énergétiques
+
+```{r filiere-consumption, echo=FALSE, fig.align='center'}
+# Aggréger les données par filière
+filiere_consumption <- consommation_data %>%
+  group_by(Filiere) %>%
+  summarise(ConsommationTotale = sum(ConsommationMWh, na.rm = TRUE))
+
+# Graphique
+ggplot(filiere_consumption, aes(x = reorder(Filiere, ConsommationTotale), y = ConsommationTotale)) +
+  geom_bar(stat = "identity", fill = "purple") +
+  coord_flip() +
+  labs(
+    title = "Consommation totale par filière énergétique",
+    x = "Filières énergétiques",
+    y = "Consommation totale (MWh)"
+  ) +
+  theme_minimal()
+```
+
+Ce graphique compare la consommation totale entre deux filières énergétiques : le gaz et l'électricité. On observe que les deux filières présentent des niveaux de consommation élevés, avec une légère supériorité pour la filière électrique. Ces résultats reflètent l'importance cruciale de ces deux sources d'énergie dans le mix énergétique français et leur rôle central dans la satisfaction des besoins des différents secteurs économiques et des ménages.
+
+La dominance de l’électricité pourrait être attribuée à son utilisation généralisée dans les secteurs résidentiel et tertiaire, ainsi qu’à sa présence dans de nombreux processus industriels. Le gaz, bien qu’il arrive légèrement derrière, reste une source clé, particulièrement dans les applications résidentielles pour le chauffage et dans certains processus industriels spécifiques.
+
+Ce graphique souligne l’importance d’investir dans l’efficacité et la durabilité des deux filières, car leur contribution combinée représente une part majeure de la consommation énergétique nationale. Ces résultats montrent également que toute stratégie de transition énergétique doit prendre en compte ces deux filières pour répondre aux besoins croissants en énergie tout en réduisant l’impact environnemental.
+
+## 5. Analyse statistique
+
+### A. Test du khi-deux sur les catégories de consommation
+
+```{r test-khi-deux, echo=FALSE, message=FALSE, warning=FALSE}
+
+# Convertir les données en numérique
+consommation_couverte$Part.de.la.consommation.nationale.couverte.... <- as.numeric(
+  gsub(",", ".", consommation_couverte$Part.de.la.consommation.nationale.couverte....)
+)
+
+# Charger les bibliothèques
+library(dplyr)
+library(tidyr)
+
+# Créer la table de contingence
+consommation_table <- consommation_couverte %>%
+  filter(Année == 2023) %>%
+  group_by(Region, Filière) %>%
+  summarise(Somme_conso = sum(as.numeric(Part.de.la.consommation.nationale.couverte....), na.rm = TRUE)) %>%
+  pivot_wider(names_from = Filière, values_from = Somme_conso, values_fill = 0)
+
+# Supprimer le regroupement, supprimer la colonne 'Région', puis convertir en matrice
+khi_table <- consommation_table %>%
+  ungroup() %>%        
+  select(-Region) %>%  
+  as.matrix()          
+
+# Vérifier les conditions de validité de la table
+if (any(is.na(khi_table))) stop("La table contient des valeurs NA.")
+if (any(khi_table < 0)) stop("La table contient encore des valeurs négatives.")
+if (any(!is.finite(khi_table))) stop("La table contient des valeurs infinies ou non valides.")
+
+# Afficher la table de contingence
+cat("Table de contingence utilisée pour le test du khi-deux :\n")
+print(khi_table)
+
+# Effectuer le test du khi-deux si la table est valide
+if (nrow(khi_table) > 1 && ncol(khi_table) > 1) {
+  khi_result <- chisq.test(khi_table)
+  print(khi_result)
+} else {
+  message("Le test du khi-deux ne peut pas être exécuté : table trop petite ou invalide.")
+}
+
+```
+
+Ce tableau présente une analyse statistique effectuée à l’aide du test du khi-deux sur les catégories de consommation énergétique des régions françaises en fonction de différentes filières énergétiques. La table de contingence utilisée pour ce test montre les valeurs de consommation énergétique (en unités proportionnelles ou absolues, selon les données traitées) réparties par filière pour chaque région.
+
+Chaque ligne du tableau correspond à une région, tandis que les colonnes représentent les différentes filières énergétiques : bioénergies, hydraulique, nucléaire, solaire, thermique fossile, et éolien. Par exemple, la région [1] semble fortement orientée vers le nucléaire (19.1) et l’hydraulique (6.1), tandis que des contributions plus faibles sont observées dans les filières renouvelables comme les bioénergies ou l’éolien.
+
+On observe des disparités notables dans les profils de consommation des régions. Certaines régions, comme celle représentée par la ligne [4], montrent une consommation presque exclusivement nucléaire (25.9), ce qui indique une dépendance extrême à cette filière. En revanche, d'autres, comme la région [6], affichent une répartition plus équilibrée, avec des contributions significatives dans l’hydraulique (1.8), le nucléaire (12.6), et l’éolien (2.6). Ces données mettent en évidence des spécificités régionales en matière de consommation énergétique.
+
+Le test du khi-deux a été réalisé sur cette table de contingence, et les résultats indiquent une statistique du khi-deux ($X^2$) égale à 81.706 avec 60 degrés de liberté (df). La p-value obtenue est de 0.03272. Cette p-value, inférieure au seuil de 0.05, permet de rejeter l’hypothèse nulle d’indépendance entre les régions et les filières énergétiques. Autrement dit, il existe une relation significative entre la région et la filière de consommation énergétique, ce qui signifie que la répartition de la consommation énergétique varie selon les régions.
+
+Cependant, cette analyse nécessite une interprétation prudente, notamment en tenant compte des valeurs absolues dans les cellules. Si certaines cases contiennent des valeurs très faibles, cela peut influencer la validité de l’approximation du khi-deux, comme signalé par l'avertissement lors du calcul.
+
+En conclusion, ce test met en évidence une hétérogénéité régionale dans les choix énergétiques, qui pourrait refléter des différences dans les politiques énergétiques locales, l'accès aux ressources naturelles, ou les infrastructures disponibles. Une analyse plus approfondie pourrait explorer les facteurs sous-jacents expliquant ces disparités.
+
+```{r premiere-regression,echo=FALSE}
+
+# Régression linéaire
+lm_model <- lm(ConsommationParHabitant ~ Population, data = data_combined)
+summary(lm_model)
+```
+
+En parallèle, une régression linéaire a été réalisée pour examiner la relation entre la consommation par habitant et la population totale des régions. L'objectif était de vérifier si la taille de la population pouvait expliquer, au moins en partie, les variations de la consommation par habitant observées entre les régions. Cependant, les résultats de cette régression montrent qu'il n'existe pas de relation statistiquement significative entre ces deux variables. Cela suggère que la population ne constitue pas un facteur déterminant pour expliquer les variations de consommation par habitant. D'autres variables, telles que la répartition des secteurs économiques ou les politiques locales en matière d'énergie, pourraient avoir une influence plus marquée et mériteraient d'être étudiées davantage. La régression linéaire souligne ainsi la complexité des dynamiques énergétiques régionales et la nécessité d'examiner d'autres dimensions pour comprendre pleinement ces disparités.
+
+### C. Analyse des régions excédentaires ou déficitaires en énergie
+
+```{r production-vs-consommation, echo=FALSE, fig.align='center'}
+# Comparer production et consommation
+prod_cons_combined <- merge(prod_energie %>% filter(Annee == 2023) %>% select(Region, Production_totale), 
+                             consommation_data %>% group_by(Region) %>% summarise(ConsommationTotale = sum(ConsommationMWh, na.rm = TRUE)), 
+                             by = "Region")
+prod_cons_combined <- prod_cons_combined %>% mutate(SoldeEnergetique = Production_totale - ConsommationTotale)
+
+# Graphique
+ggplot(prod_cons_combined, aes(x = reorder(Region, SoldeEnergetique), y = SoldeEnergetique, fill = SoldeEnergetique > 0)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  scale_fill_manual(values = c("red", "green"), labels = c("Déficit", "Excédent")) +
+  labs(
+    title = "Régions excédentaires ou déficitaires en énergie",
+    x = "Régions",
+    y = "Solde énergétique (MWh)",
+    fill = "Situation"
+  ) +
+  theme_minimal()
+
+# Test du khi-deux
+khi_table <- table(prod_cons_combined$Region, prod_cons_combined$SoldeEnergetique > 0)
+khi_test <- chisq.test(khi_table)
+khi_test
+```
+
+Le graphique présente une analyse du solde énergétique des différentes régions, mettant en évidence les régions en déficit énergétique en termes de mégawattheures (MWh). Sur l'axe des ordonnées, les différentes régions sont listées, tandis que l'axe des abscisses montre leur solde énergétique. Toutes les valeurs sont négatives, indiquant que toutes ces régions sont en déficit énergétique.
+
+Les barres rouges indiquent le déficit énergétique pour chaque région, et la longueur des barres est proportionnelle à l'ampleur de ce déficit. Les régions telles que l'Île-de-France et les Hauts-de-France présentent les déficits les plus importants, tandis que d'autres, comme la Bretagne et le Centre-Val-de-Loire, ont des déficits relativement moindres.
+
+L'analyse statistique par le test du khi-deux (Chi-squared test) est également présentée en bas. Cependant, un avertissement indique que l'approximation du khi-deux pourrait être incorrecte. Le résultat montre une valeur de X-squared égale à 0 avec 11 degrés de liberté, et une p-value égale à 1. Cela suggère que la répartition observée des déficits énergétiques entre les régions est parfaitement conforme aux probabilités attendues (si des attentes ont été spécifiées). Cela peut indiquer un manque de variation significative entre les régions dans ce contexte.
+
+En résumé, le graphique met en évidence une situation de déficit énergétique dans toutes les régions présentées, avec des disparités importantes. Les résultats du test du khi-deux ne révèlent pas de différences statistiquement significatives entre les déficits régionaux, mais cet indicateur doit être interprété avec prudence en raison de l'avertissement lié à l'approximation.
+
+### D. Impact des secteurs économiques sur la couverture énergétique 
+
+```{r secteurs-vs-couverture, echo=FALSE, fig.align='center'}
+# Impact des secteurs économiques sur la couverture
+secteur_combined <- merge(consommation_data, consommation_couverte %>% group_by(Region) %>% summarise(Total_conso = sum(Part.de.la.consommation.nationale.couverte...., na.rm = TRUE)), by = "Region")
+
+# Graphique
+ggplot(secteur_combined, aes(x = Total_conso, y = ConsommationMWh, color = LibelleGrandSecteur)) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(
+    title = "Impact des secteurs économiques sur la couverture énergétique",
+    x = "Part de la consommation nationale couverte (%)",
+    y = "Consommation par secteur (MWh)",
+    color = "Secteurs"
+  ) +
+  theme_minimal()
+
+# Régression linéaire
+lm_secteur <- lm(ConsommationMWh ~ Total_conso, data = secteur_combined)
+summary(lm_secteur)
+```
+
+Le graphique présente une analyse de la relation entre la consommation par secteur économique (en kWh) et la part de la consommation nationale couverte par la production énergétique régionale (en pourcentage). Chaque point représente un secteur économique spécifique, identifié par une couleur distincte : agriculture, industrie, résidentiel, secteur inconnu et tertiaire.
+
+L'axe des abscisses montre la part de la consommation nationale couverte par la production, tandis que l'axe des ordonnées indique la consommation énergétique par secteur. Une régression linéaire est superposée pour évaluer la relation entre ces deux variables.
+
+Les résultats de la régression montrent que, bien que le modèle soit statistiquement significatif (p-value < 0,001), la relation entre la couverture énergétique et la consommation des secteurs est faible, comme indiqué par le faible R² ajusté (0,002086). Cela signifie que le pourcentage de variation de la consommation par secteur expliqué par la couverture énergétique est très limité.
+
+Les coefficients de la régression indiquent une légère diminution de la consommation par secteur avec une augmentation de la couverture énergétique. Cependant, cette relation est trop faible pour être significative dans un contexte pratique. Les secteurs présentent une grande hétérogénéité dans leur consommation énergétique, ce qui est reflété par la large dispersion des points sur le graphique.
+
+En résumé, bien que des variations soient observées entre les secteurs, la couverture énergétique nationale ne semble pas être un facteur déterminant de la consommation énergétique par secteur. Cela pourrait indiquer que d'autres variables, telles que la population, les besoins énergétiques propres aux secteurs ou les infrastructures, jouent un rôle plus important dans la consommation énergétique.
+
+## Conclusion 
+
+La transition énergétique en France révèle des disparités marquées entre les régions en termes de production, de consommation et de ressources énergétiques. À travers les analyses menées, il est apparu que certaines régions, comme l’Auvergne-Rhône-Alpes, se distinguent par une production énergétique abondante, en grande partie hydraulique, tandis que d’autres, comme l’Île-de-France, se trouvent dans une situation de forte dépendance vis-à-vis des importations en raison d’une consommation bien supérieure à leur production locale. Ces écarts mettent en évidence le rôle crucial des ressources naturelles dans la capacité de production énergétique régionale, mais aussi les inégalités structurelles qui persistent entre les territoires.
+
+L’étude des consommations par secteur économique a permis de montrer que l’industrie et le résidentiel représentent des parts importantes de la demande énergétique, contribuant directement aux déficits observés dans des régions comme les Hauts-de-France ou encore l’Île-de-France. Cette inadéquation entre production et consommation, aggravée par une répartition inégale des infrastructures et des investissements énergétiques, met en lumière l’urgence de développer des stratégies adaptées à chaque région. Par exemple, des efforts supplémentaires pourraient être entrepris pour améliorer l’efficacité énergétique dans les zones fortement consommatrices et pour renforcer la capacité de production locale dans les régions structurellement déficitaires.
+
+L’évolution des énergies renouvelables, bien qu’encourageante, reste encore inégale sur le territoire. Les données montrent que des régions comme l’Occitanie progressent significativement dans l’intégration des énergies renouvelables, tandis que d’autres, plus dépendantes des énergies fossiles et nucléaires, peinent à réduire leur impact environnemental. Cela souligne l’importance de politiques nationales cohérentes pour harmoniser la transition énergétique et de renforcer le soutien financier et technique aux régions les moins avancées. Par ailleurs, la corrélation entre la consommation énergétique, les besoins des secteurs économiques et la part de la consommation couverte par des sources renouvelables illustre clairement les défis liés à l’atteinte des objectifs de durabilité.
+
+En somme, les analyses confirment que la problématique initiale – comprendre les disparités régionales et identifier les leviers pour améliorer l’équilibre énergétique en France – trouve des réponses claires. Ces disparités, bien que fortement influencées par des facteurs géographiques et structurels, peuvent être réduites par des politiques ciblées, une meilleure coordination nationale et des investissements massifs dans les énergies renouvelables. L’avenir énergétique de la France dépendra de sa capacité à corriger ces inégalités tout en poursuivant une transition juste et durable.
